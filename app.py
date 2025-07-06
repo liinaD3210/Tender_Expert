@@ -30,7 +30,7 @@ def to_excel(df: pd.DataFrame):
 
 # --- UI Настройка ---
 st.set_page_config(layout="wide", page_title="Тендер-Эксперт")
-st.title("🤖 AI-анализатор 'Тендер-Эксперт'")
+st.title("AI-анализатор Тендер-Эксперт")
 st.write("Интеллектуальный помощник для анализа коммерческих предложений и поиска лучших цен на рынке.")
 
 # --- Инициализация состояния сессии ---
@@ -70,7 +70,13 @@ with tab1:
     st.markdown("---")
     
     st.subheader("Или загрузите свои файлы:")
-    uploaded_files = st.file_uploader("Форматы: PDF, XLSX, DOCX", accept_multiple_files=True, type=['pdf', 'xlsx', 'docx'], label_visibility="collapsed", key=f"uploader_{st.session_state.get('uploader_key', 0)}")
+    uploaded_files = st.file_uploader(
+        "Нажмите, чтобы выбрать файлы, или перетащите их сюда", # Это и есть новый label
+        accept_multiple_files=True,
+        type=['pdf', 'xlsx', 'docx'],
+        # label_visibility="collapsed" <- УБИРАЕМ или меняем на "visible"
+        key=f"uploader_{st.session_state.get('uploader_key', 0)}"
+    )
     if uploaded_files:
         st.session_state.demo_mode = False
         st.session_state.analysis_results = None # Сбрасываем старые результаты
@@ -85,10 +91,10 @@ with tab1:
         for uploaded_file in uploaded_files:
             files_to_process.append({"name": uploaded_file.name, "data": uploaded_file.getvalue()})
 
-    if st.session_state.demo_mode: st.success("Выбран демо-режим. Нажмите 'Сравнить', чтобы начать.")
+    if st.session_state.demo_mode: st.success("Выбран демо-режим. Нажмите 'Сравнить предложения', чтобы начать.")
 
     st.header("Шаг 2: Запустите анализ")
-    if st.button("🚀 Сравнить предложения", disabled=not files_to_process, key="compare_button"):
+    if st.button("Сравнить предложения", disabled=not files_to_process, key="compare_button"):
         with st.spinner("Выполняю полный анализ..."):
             all_items = []
             with st.status("Анализ документов...", expanded=True) as status:
@@ -128,7 +134,7 @@ with tab1:
     
     # --- БЛОК ОТОБРАЖЕНИЯ РЕЗУЛЬТАТОВ (работает всегда, если есть данные в сессии) ---
     if st.session_state.analysis_results:
-        st.success("🎉 Анализ завершен! Вот результаты:")
+        st.success("🎉 Анализ завершен! Результаты представлены ниже:")
         
         df = st.session_state.analysis_results["df"]
         insight_text = st.session_state.analysis_results["insight_text"]
@@ -162,7 +168,7 @@ with tab1:
 with tab2:
     # ... код для второй вкладки остается без изменений ...
     st.header("Найдите лучшее предложение в интернете")
-    item_to_search = st.text_input("Введите наименование товара или артикул:", placeholder="Например, Подшипник 6205-2RS")
+    item_to_search = st.text_input("Введите наименование товара:", placeholder="Например, Подшипник 6205-2RS")
     if st.button("🔍 Найти предложения", disabled=not item_to_search, key="search_button"):
         with st.spinner("Формирую поисковый запрос..."):
             search_query = generate_search_query(item_to_search)
