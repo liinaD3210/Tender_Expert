@@ -1,0 +1,29 @@
+# .dockerignore
+
+# Игнорируем виртуальное окружение
+.venv/
+venv/
+
+# Игнорируем кэш Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Игнорируем файлы IDE
+.vscode/
+.idea/
+
+# Игнорируем системные файлы
+.DS_Store
+
+# Игнорируем git
+.git/
+.gitignore
+
+# Игнорируем сам Dockerfile и .dockerignore
+Dockerfile
+.dockerignore
+
+# ВАЖНО: Не копируем файл с секретами в образ!
+# Мы передадим его в контейнер при запуске.
+.env
